@@ -1,3 +1,5 @@
+import numpy;
+
 initialString = "automate nearly everything"
 keyMatrix = [3,1,4,9]
 createdMatrix = []
@@ -28,3 +30,52 @@ for i in range(len(encryptedMatrix)):
     encryptedString = encryptedString + reversedAlphabetDict[encryptedMatrix[i]]
 
 print(encryptedString)
+
+# BEGIN DECODE
+
+print("second half!")
+
+decryptString = "suuwxd esrkihpatsm"
+decodeMatrix = [[4,5,12],[9,5,5],[13,13,7]]
+decryptMatrix = []
+linearInverse = []
+answerMatrix = []
+finalMatrix = []
+output = ""
+
+for j in range(3):
+    temp = []
+    for i in range(len(decryptString)//3):
+        temp.append(alphabetDict[decryptString[i+(j*6)]])
+    decryptMatrix.append(temp)
+    temp.clear
+    
+decodeInverse = numpy.linalg.inv(decodeMatrix)
+decodeInverse = decodeInverse * 514 # hardcoded GDC of inverted matrix
+
+for i in decodeInverse:
+    for j in range(len(i)):
+        i[j] = i[j] % 27
+        i[j] = int(round(i[j],0))
+        linearInverse.append(int(i[j]))
+
+intMatrix = []
+
+for j in range(3):
+    temp = []
+    for i in range(3):
+        temp.append(int(decodeInverse[j][i]))
+    intMatrix.append(temp)
+    temp.clear
+
+answerMatrix = numpy.matmul(intMatrix, decryptMatrix)
+
+for i in answerMatrix:
+    for j in range(len(i)):
+        i[j] = int(i[j] % 27)
+        finalMatrix.append(reversedAlphabetDict[i[j]])
+
+for i in range(len(finalMatrix)):
+    output = output + finalMatrix[i]
+
+print(output)
